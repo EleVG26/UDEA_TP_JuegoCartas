@@ -1,8 +1,13 @@
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
-
 import javax.swing.JPanel;
+/**
+ * La clase Jugador representa a un jugador en el juego de cartas.
+ * Un jugador tiene un conjunto de cartas y puede realizar acciones como repartir, mostrar cartas,
+ * verificar si una carta es parte de un grupo o escalera, y calcular su puntaje restante.
+ */
+
 
 public class Jugador {
 
@@ -12,6 +17,11 @@ public class Jugador {
 
     private Carta[] cartas = new Carta[TOTAL_CARTAS];
     private Random r = new Random();
+
+    /**
+     * Reparte cartas aleatoriamente al jugador.
+     * Cada carta se crea utilizando un generador aleatorio.
+     */
 
     public void repartir() {
         int i = 0;

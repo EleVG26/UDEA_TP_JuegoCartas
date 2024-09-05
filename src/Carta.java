@@ -3,10 +3,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Carta {
+/**
+ * La clase Carta representa una carta de una baraja inglesa. Cada carta tiene
+ * un índice que determina su valor y pinta.
+ */
 
+public class Carta {
+    // Índice de la carta (1-52), utilizado para determinar el valor y la pinta
     private int indice;
-    //correcciones
+    // La pinta de la carta (Tréboles, Picas, Corazones o Diamantes)
     private Pinta pinta;
 
     public Carta(Random r) {

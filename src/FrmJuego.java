@@ -8,15 +8,28 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La clase FrmJuego representa la interfaz gráfica del juego de cartas.
+ * Contiene dos jugadores, cada uno con su propio panel en una pestaña.
+ * Permite repartir las cartas y verificar los grupos y escaleras.
+ */
+
 public class FrmJuego extends JFrame {
+    // Botones para repartir y verificar cartas
     private JButton btnRepartir;
     private JButton btnVerificar;
+    // Paneles donde se muestran las cartas de los jugadores
     private JPanel pnlJugador1;
     private JPanel pnlJugador2;
+     // Pestañas para cambiar entre jugadores
     private JTabbedPane tpJugadores;
 
     Jugador jugador1, jugador2;
 
+    /**
+     * Constructor que inicializa la interfaz gráfica del juego.
+     * Configura los botones, los paneles y los jugadores.
+     */
     public FrmJuego() {
         btnRepartir = new JButton();
         btnVerificar = new JButton();
@@ -24,13 +37,15 @@ public class FrmJuego extends JFrame {
         pnlJugador1 = new JPanel();
         pnlJugador2 = new JPanel();
 
+        // Configuración de la ventana principal
         setSize(600, 300);
         setTitle("JUEGO DE CARTAS");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+         // Configuración del panel del primer jugador
         pnlJugador1.setBackground(new Color(93, 29, 194));
         pnlJugador1.setLayout(null);
+        // Configuración del panel del segundo jugador
         pnlJugador2.setBackground(new Color(41, 154, 194));
         pnlJugador2.setLayout(null);
 
@@ -46,7 +61,8 @@ public class FrmJuego extends JFrame {
                 btnRepartirClick(evt);
             }
         });
-
+        
+        // Configuración del botón "Verificar"
         btnVerificar.setBounds(120, 10, 100, 25);
         btnVerificar.setText("Verificar");
         btnVerificar.addActionListener(new ActionListener() {
@@ -54,7 +70,8 @@ public class FrmJuego extends JFrame {
                 btnVerificarClick(evt);
             }
         });
-
+        
+        // Agregar los componentes a la ventana
         getContentPane().setLayout(null);
         getContentPane().add(tpJugadores);
         getContentPane().add(btnRepartir);
