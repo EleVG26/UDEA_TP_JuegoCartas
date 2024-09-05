@@ -30,6 +30,8 @@ public class Jugador {
         pnl.repaint();
 
     }
+
+
     //crear un metodo que devuielve un String
     public String getGrupos() {
         String mensaje = "No se encontraron figuras";
@@ -41,14 +43,14 @@ public class Jugador {
         boolean hayGrupos = false;
         for (int i = 0; i < contadores.length; i++) {
             if (contadores[i] >= 2) {
-                if(!hayGrupos){
+                if (!hayGrupos) {
                     hayGrupos = true;
                     mensaje = "Se encontraron grupos de: \n ";
                 }
                 mensaje += "TERNA" + "de" + "KING" + "\n";
-        }
+            }
 
+        }
         return mensaje;
     }
-
 }
