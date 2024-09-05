@@ -1,7 +1,7 @@
 //Lista de valores constantes
 public enum Pinta {
-    TREBOL,
-    PICA,
-    CORAZON,
-    DIAMANTE
+    TREBOL, //negro
+    PICA, // Espada negra
+    CORAZON, // Rojo
+    DIAMANTE //rombo rojo
 }
