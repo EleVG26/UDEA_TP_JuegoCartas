@@ -33,6 +33,21 @@ public class Jugador {
     //crear un metodo que devuielve un String
     public String getGrupos() {
         String mensaje = "No se encontraron figuras";
+        int[] contadores = new int[NombreCarta.values().length];
+        //recorrer el total de las cartas
+        for (Carta c : cartas) {
+            contadores[c.getNombre().ordinal()]++;
+        }
+        boolean hayGrupos = false;
+        for (int i = 0; i < contadores.length; i++) {
+            if (contadores[i] >= 2) {
+                if(!hayGrupos){
+                    hayGrupos = true;
+                    mensaje = "Se encontraron grupos de: \n ";
+                }
+                mensaje += "TERNA" + "de" + "KING" + "\n";
+        }
+
         return mensaje;
     }
 
