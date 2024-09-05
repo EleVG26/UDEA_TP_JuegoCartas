@@ -1,10 +1,8 @@
 import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 
 public class Jugador {
 
@@ -19,14 +17,27 @@ public class Jugador {
         int i = 0;
         for (Carta c : cartas) {
             cartas[i++] = new Carta(r);
+            // cartas [i++] = new Carta(i); // Se usa para probar la escalera con un set de cartas fijo
         }
 
     }
+    //probar la escalera con cartas fijos
+    // public void repartir() {
+    // // Aquí nos aseguramos de que las cartas sean de tréboles (índices de 1 a 13)
+    // int[] valoresFijos = {6, 7, 8, 9, 10, 11, 12, 13, 1, 2}; // Índices
+    // circulares de 6 a 2 en tréboles
+
+    // for (int i = 0; i < TOTAL_CARTAS; i++) {
+    // cartas[i] = new Carta(valoresFijos[i]); // Asignar cartas con valores fijos
+    // (1 a 13 = tréboles)
+    // }
+    // }
 
     public void mostrar(JPanel pnl) {
         pnl.removeAll();
-
+        // Variable 'p' que actúa como contador para controlar la posición de las cartas
         int p = 1;
+        // Itera sobre todas las cartas en la colección "cartas"
         for (Carta c : cartas) {
             c.mostrar(pnl, MARGEN + TOTAL_CARTAS * DISTANCIA - p++ * DISTANCIA, MARGEN);
         }
@@ -35,26 +46,102 @@ public class Jugador {
 
     }
 
-    public int calcularPuntajeRestante() {
-        int puntaje = 0;
-    
-        // Crear un array para contar cuántas cartas hay de cada nombre
-        int[] contadores = new int[NombreCarta.values().length];
-    
-        // Llenar el array con las cartas del jugador
+    public List<Carta> obtenerCartasNoAgrupadas() {
+        List<Carta> cartasNoAgrupadas = new ArrayList<>();
+
         for (Carta c : cartas) {
-            contadores[c.getNombre().ordinal()]++;
+            if (!cartaEsParteDeGrupo(c)) { // Este método verifica si la carta está en un grupo
+                cartasNoAgrupadas.add(c);
+            }
+        }
+
+        return cartasNoAgrupadas;
+    }
+    
+    
+    private boolean cartaEsParteDeGrupo(Carta carta) {
+        // Verificar si la carta está en una escalera
+        if (esParteDeEscalera(carta)) {
+            return true;
         }
     
-        // Sumar el valor de las cartas que no forman parte de grupos
-        for (int i = 0; i < contadores.length; i++) {
-            if (contadores[i] < 2) {
-                // Asignar valor a las cartas no agrupadas
-                if (i >= 9) { // Ace, Jack, Queen, King valen 10
-                    puntaje += 10;
-                } else {
-                    puntaje += (i + 1); // Cartas 2-10 valen su respectivo número
+        // Verificar si la carta está en un grupo de pares o ternas
+        if (esParteDeGrupo(carta)) {
+            return true;
+        }
+    
+        // Si no está en ningún grupo ni escalera
+        return false;
+    }
+    
+    // Método auxiliar para verificar si la carta está en una escalera
+    private boolean esParteDeEscalera(Carta carta) {
+        Pinta pinta = carta.getPinta();
+        NombreCarta nombre = carta.getNombre();
+    
+        // Se crea un array temporal que almacene las cartas de la misma pinta
+        boolean[] cartasDeMismaPinta = new boolean[13];
+    
+        // Llenar el array con las cartas de la misma pinta
+        for (Carta c : cartas) {
+            if (c.getPinta() == pinta) {
+                cartasDeMismaPinta[c.getNombre().ordinal()] = true;
+            }
+        }
+    
+        // Verificar si la carta es parte de una secuencia de 3 o más cartas consecutivas
+        int consecutivas = 0;
+        for (int i = 0; i < 13; i++) {
+            if (cartasDeMismaPinta[i]) {
+                consecutivas++;
+                if (consecutivas >= 3 && (i >= nombre.ordinal() && i <= nombre.ordinal() + 2)) {
+                    return true; // La carta es parte de una escalera
                 }
+            } else {
+                consecutivas = 0; // Reiniciar si no hay cartas consecutivas
+            }
+        }
+    
+        return false;
+    }
+    
+    // Método auxiliar para verificar si la carta está en un grupo de pares o ternas
+    private boolean esParteDeGrupo(Carta carta) {
+        NombreCarta nombre = carta.getNombre();
+        int contador = 0;
+    
+        // Contar cuántas cartas del mismo valor hay
+        for (Carta c : cartas) {
+            if (c.getNombre() == nombre) {
+                contador++;
+            }
+        }
+    
+        // Si hay 2 o más cartas con el mismo valor, es un par o más
+        return contador >= 2;
+    }
+    
+
+    public int calcularPuntajeRestante(List<Carta> cartasNoAgrupadas) {
+        int puntaje = 0;
+    
+        // Sumar el valor de las cartas no agrupadas
+        for (Carta c : cartasNoAgrupadas) {
+            NombreCarta nombre = c.getNombre();
+    
+            switch (nombre) {
+                case JACK:
+                case QUEEN:
+                case KING:
+                    puntaje += 10; // Figuras (J, Q, K) valen 10 puntos
+                    break;
+                case AS:
+                    puntaje += 1; // Por defecto, As vale 1, o puedes agregar lógica para que valga 11 si lo prefieres
+                    break;
+                default:
+                    // Cartas numéricas (2 al 10)
+                    puntaje += nombre.ordinal() + 1; // ordinal() + 1 para obtener el valor real de la carta (2-10)
+                    break;
             }
         }
     
@@ -99,25 +186,50 @@ public class Jugador {
             cartasPorPinta[pinta.ordinal()][nombre.ordinal()]++;
         }
 
-        // Verificar si hay secuencias de 3 o más cartas consecutivas en la misma pinta
+        // Verificar si hay secuencias de cartas consecutivas en la misma pinta (con
+        // soporte circular)
         for (int i = 0; i < cartasPorPinta.length; i++) {
             int consecutivas = 0;
-            for (int j = 0; j < cartasPorPinta[i].length; j++) {
-                if (cartasPorPinta[i][j] > 0) {
+            int inicioEscalera = -1;
+            int maxConsecutivas = 0;
+            int maxInicioEscalera = -1;
+            int maxFinEscalera = -1;
+
+            // Recorrer el array de cada pinta dos veces para simular un comportamiento
+            // circular
+            for (int j = 0; j < cartasPorPinta[i].length * 2; j++) {
+                int indiceCircular = j % 13; // Usar el índice circular
+
+                if (cartasPorPinta[i][indiceCircular] > 0) {
                     consecutivas++;
-                    if (consecutivas >= 3) {
-                        hayEscalera = true;
-                        mensaje.append("Escalera de ")
-                                .append(Pinta.values()[i])
-                                .append(" desde ")
-                                .append(NombreCarta.values()[j - consecutivas + 1])
-                                .append(" a ")
-                                .append(NombreCarta.values()[j])
-                                .append("\n");
+                    if (inicioEscalera == -1) {
+                        inicioEscalera = indiceCircular; // Marcar el inicio de la escalera
+                    }
+
+                    // Si encontramos una nueva secuencia máxima
+                    if (consecutivas > maxConsecutivas) {
+                        maxConsecutivas = consecutivas;
+                        maxInicioEscalera = inicioEscalera;
+                        maxFinEscalera = indiceCircular;
                     }
                 } else {
                     consecutivas = 0; // Reiniciar contador si no hay cartas consecutivas
+                    inicioEscalera = -1; // Reiniciar el inicio de la escalera
                 }
+            }
+
+            // Si se encontró una secuencia de 3 o más cartas
+            if (maxConsecutivas >= 3) {
+                hayEscalera = true;
+                mensaje.append("Escalera de ")
+                        .append(maxConsecutivas)
+                        .append(" cartas de ")
+                        .append(Pinta.values()[i])
+                        .append(" desde ")
+                        .append(NombreCarta.values()[maxInicioEscalera])
+                        .append(" hasta ")
+                        .append(NombreCarta.values()[maxFinEscalera])
+                        .append("\n");
             }
         }
 

@@ -34,10 +34,10 @@ public class FrmJuego extends JFrame {
         pnlJugador2.setBackground(new Color(41, 154, 194));
         pnlJugador2.setLayout(null);
 
-        // las pestañas
+        // las pestañas donde van los jugadores
         tpJugadores.setBounds(10, 40, 550, 170);
-        tpJugadores.addTab("Martín", pnlJugador1);
-        tpJugadores.addTab("Raul", pnlJugador2);
+        tpJugadores.addTab("Esteban", pnlJugador1);
+        tpJugadores.addTab("Elena", pnlJugador2);
 
         btnRepartir.setBounds(10, 10, 100, 25);
         btnRepartir.setText("Repartir");
@@ -71,17 +71,10 @@ public class FrmJuego extends JFrame {
 
         jugador1.mostrar(pnlJugador1);
         jugador2.mostrar(pnlJugador2);
-
-        // pnlJugador1.removeAll();
-        // Random r= new Random();
-        // Carta c = new Carta(r);
-        // c.mostrar(pnlJugador1, 10, 10);
-
-        // pnlJugador1.repaint();
-
     }
 
     private void btnVerificarClick(ActionEvent evt) {
+        //CÓDIGO REALIZADO EN CLASE
         // que se muestren los grupos encontrados segun el jugador
         // switch (tpJugadores.getSelectedIndex()) {
         // case 0:
@@ -92,19 +85,20 @@ public class FrmJuego extends JFrame {
         // JOptionPane.showMessageDialog(null, jugador2.getGrupos());
         // break;
         // }
+
+        // Determinar qué jugador es el actual según la pestaña seleccionada en el TabbedPane
         Jugador jugadorActual;
         if (tpJugadores.getSelectedIndex() == 0) {
             jugadorActual = jugador1;
         } else {
             jugadorActual = jugador2;
         }
-
+        // Obtener los grupos (pares, ternas, etc.) del jugador actual
         String grupos = jugadorActual.getGrupos();
         String escaleras = jugadorActual.getEscaleras();
-        int puntajeRestante = jugadorActual.calcularPuntajeRestante();
-
+        // Calcular el puntaje restante sumando las cartas que no forman parte de ningún grupo
+        int puntajeRestante = jugadorActual.calcularPuntajeRestante(jugadorActual.obtenerCartasNoAgrupadas());
+        // Mostrar en un mensaje emergente (JOptionPane) los grupos, las escaleras y el puntaje restante del jugador actual
         JOptionPane.showMessageDialog(null, grupos + "\n" + escaleras + "\nPuntaje restante: " + puntajeRestante);
-
     }
-
 }
