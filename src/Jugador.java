@@ -34,7 +34,7 @@ public class Jugador {
 
     //crear un metodo que devuielve un String
     public String getGrupos() {
-        String mensaje = "No se encontraron figuras";
+        String mensaje = "No se encontraron grupos";
         int[] contadores = new int[NombreCarta.values().length];
         //recorrer el total de las cartas
         for (Carta c : cartas) {
@@ -47,7 +47,7 @@ public class Jugador {
                     hayGrupos = true;
                     mensaje = "Se encontraron grupos de: \n ";
                 }
-                mensaje += "TERNA" + "de" + "KING" + "\n";
+                mensaje += Grupo.values()[contadores[i]] + "de" + NombreCarta.values()[i] + "\n";
             }
 
         }
